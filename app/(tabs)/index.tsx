@@ -1,82 +1,234 @@
-import { Image } from "expo-image";
-import { Platform, StyleSheet ,View} from "react-native";
+import React from 'react'
+import { FlatList, Image, SafeAreaView, StatusBar, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { useNavigation } from 'expo-router'
 
-import { HelloWave } from "@/components/HelloWave";
-import ParallaxScrollView from "@/components/ParallaxScrollView";
-import { ThemedText } from "@/components/ThemedText";
-import { ThemedView } from "@/components/ThemedView";
+interface ChatItem {
+  id: string
+  name: string
+  message: string
+  time: string
+  unread?: number
+  avatar?: string
+}
 
-export default function HomeScreen() {
+const Chat = () => {
+  const navigation = useNavigation()
+  // 聊天数据
+  const chatData: ChatItem[] = [
+    {
+      id: '1',
+      name: '李晓华',
+      message: '好的，那我们下午3点见面讨论项目细节',
+      time: '12:30',
+      avatar: 'https://randomuser.me/api/portraits/men/1.jpg',
+    },
+    {
+      id: '2',
+      name: '产品研发群',
+      message: '张总：新版本的设计稿已经上传到群文件了',
+      time: '11:45',
+      avatar: 'https://randomuser.me/api/portraits/men/1.jpg',
+      unread: 3,
+    },
+    {
+      id: '3',
+      name: '王经理',
+      message: '周报已经收到，辛苦了',
+      avatar: 'https://randomuser.me/api/portraits/men/1.jpg',
+      time: '10:20',
+    },
+    {
+      id: '4',
+      name: '陈工程师',
+      message: '服务器已经部署完成，可以开始测试了',
+      avatar: 'https://randomuser.me/api/portraits/men/1.jpg',
+      time: '09:15',
+    },
+    {
+      id: '5',
+      name: '项目管理群',
+      message: '刘总：明天上午10点全体会议，请准时参加',
+      avatar: 'https://randomuser.me/api/portraits/men/1.jpg',
+      time: '昨天',
+      unread: 12,
+    },
+    {
+      id: '6',
+      name: '赵设计师',
+      message: 'UI设计稿已经修改完成，麻烦确认一下',
+      avatar: 'https://randomuser.me/api/portraits/men/1.jpg',
+      time: '昨天',
+    },
+    {
+      id: '7',
+      name: '王总',
+      message: '项目计划已经确认，请开始工作',
+      avatar: 'https://randomuser.me/api/portraits/men/1.jpg',
+      time: '今天',
+    },
+    {
+      id: '8',
+      name: '王总',
+      message: '项目计划已经确认，请开始工作',
+      avatar: 'https://randomuser.me/api/portraits/men/1.jpg',
+      time: '今天',
+    },
+    {
+      id: '9',
+      name: '王总',
+      message: '项目计划已经确认，请开始工作',
+      avatar: 'https://randomuser.me/api/portraits/men/1.jpg',
+      time: '今天',
+    },
+    {
+      id: '10',
+      name: '王总',
+      message: '项目计划已经确认，请开始工作',
+      avatar: 'https://randomuser.me/api/portraits/men/1.jpg',
+      time: '今天',
+    },
+    {
+      id: '11',
+      name: '王总',
+      message: '项目计划已经确认，请开始工作',
+      avatar: 'https://randomuser.me/api/portraits/men/1.jpg',
+      time: '今天',
+    },
+    {
+      id: '12',
+      name: '王总',
+      message: '项目计划已经确认，请开始工作',
+      avatar: 'https://randomuser.me/api/portraits/men/1.jpg',
+      time: '今天',
+    },
+  ]
+
+  // 渲染聊天项
+  const renderChatItem = ({ item }: { item: ChatItem }) => (
+    <TouchableOpacity
+      style={styles.chatItem}
+      onPress={() => {
+        // @ts-ignore
+        navigation.navigate('chatDetail')
+      }}>
+      <View>
+        <Image source={{ uri: item.avatar }} style={styles.avatar} />
+        {item.unread && (
+          <View style={styles.unreadBadge}>
+            <Text style={styles.unreadText}>{item.unread}</Text>
+          </View>
+        )}
+      </View>
+      <View style={styles.chatContent}>
+        <View style={styles.chatHeader}>
+          <Text style={styles.name}>{item.name}</Text>
+          <Text style={styles.time}>{item.time}</Text>
+        </View>
+        <Text style={styles.message} numberOfLines={1} ellipsizeMode="tail">
+          {item.message}
+        </Text>
+      </View>
+    </TouchableOpacity>
+  )
+
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: "#A1CEDC", dark: "#1D3D47" }}
-      headerImage={
-        <Image
-          source={require("@/assets/images/partial-react-logo.png")}
-          style={styles.reactLogo}
-        />
-      }
-    >
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">What's your name</ThemedText>
-        <HelloWave />
-        <View className='w-[100] h-[100] bg-blue-500'></View>
+    <SafeAreaView style={styles.container}>
+      <StatusBar barStyle="dark-content" backgroundColor="#fff" />
 
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit{" "}
-          <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText>{" "}
-          to see changes. Press{" "}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: "cmd + d",
-              android: "cmd + m",
-              web: "F12",
-            })}
-          </ThemedText>{" "}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-        <ThemedText>
-          {`Tap the Explore tab to learn more about what's included in this starter app.`}
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          {`When you're ready, run `}
-          <ThemedText type="defaultSemiBold">
-            npm run reset-project
-          </ThemedText>{" "}
-          to get a fresh <ThemedText type="defaultSemiBold">app</ThemedText>{" "}
-          directory. This will move the current{" "}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{" "}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
-  );
+      {/* 标题栏 */}
+      <View style={styles.header}>
+        <Text style={styles.headerTitle}>聊天</Text>
+      </View>
+
+      {/* 聊天列表 */}
+      <FlatList
+        data={chatData}
+        renderItem={renderChatItem}
+        keyExtractor={(item) => item.id}
+        contentContainerStyle={styles.listContent}
+        ItemSeparatorComponent={() => <View style={styles.separator} />}
+      />
+    </SafeAreaView>
+  )
 }
 
 const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 8,
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
   },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 16,
+    borderBottomWidth: 0.5,
+    borderBottomColor: '#e0e0e0',
   },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: "absolute",
+  headerTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
   },
-});
+  avatar: {
+    width: 50,
+    height: 50,
+    borderRadius: 8,
+    marginRight: 16,
+    backgroundColor: '#e0e0e0',
+  },
+  listContent: {
+    paddingVertical: 8,
+  },
+  chatItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    position: 'relative',
+  },
+  chatContent: {
+    flex: 1,
+  },
+  chatHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 4,
+  },
+  name: {
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  time: {
+    fontSize: 12,
+    color: '#888',
+  },
+  message: {
+    fontSize: 14,
+    color: '#666',
+    maxWidth: '90%',
+  },
+  unreadBadge: {
+    position: 'absolute',
+    right: 16,
+    top: 0,
+    backgroundColor: '#f44336',
+    borderRadius: 10,
+    minWidth: 20,
+    height: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 4,
+  },
+  unreadText: {
+    color: 'white',
+    fontSize: 12,
+    fontWeight: 'bold',
+  },
+  separator: {
+    height: 1,
+    backgroundColor: '#f0f0f0',
+    marginLeft: 78,
+  },
+})
+
+export default Chat

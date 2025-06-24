@@ -1,15 +1,15 @@
-import { Tabs } from 'expo-router';
-import React from 'react';
-import { Platform } from 'react-native';
+import { Tabs } from 'expo-router'
+import React from 'react'
+import { Platform } from 'react-native'
 
-import { HapticTab } from '@/components/HapticTab';
-import { IconSymbol } from '@/components/ui/IconSymbol';
-import TabBarBackground from '@/components/ui/TabBarBackground';
-import { Colors } from '@/constants/Colors';
-import { useColorScheme } from '@/hooks/useColorScheme';
+import { HapticTab } from '@/components/HapticTab'
+import TabBarBackground from '@/components/ui/TabBarBackground'
+import { Colors } from '@/constants/Colors'
+import { useColorScheme } from '@/hooks/useColorScheme'
+import MaterialIcons from '@expo/vector-icons/MaterialIcons'
 
 export default function TabLayout() {
-  const colorScheme = useColorScheme();
+  const colorScheme = useColorScheme()
 
   return (
     <Tabs
@@ -29,17 +29,17 @@ export default function TabLayout() {
       <Tabs.Screen
         name="index"
         options={{
-          title: 'Home',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
+          title: '聊天',
+          tabBarIcon: ({ color }) => <MaterialIcons color={color} size={28} name="chat-bubble" />,
         }}
       />
       <Tabs.Screen
-        name="explore"
+        name="mine"
         options={{
-          title: 'Explore',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
+          title: '我的',
+          tabBarIcon: ({ color }) => <MaterialIcons color={color} size={28} name="person" />,
         }}
       />
     </Tabs>
-  );
+  )
 }
