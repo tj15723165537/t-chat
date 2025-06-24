@@ -1,6 +1,6 @@
 import React from 'react'
 import { FlatList, Image, SafeAreaView, StatusBar, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import { useNavigation } from 'expo-router'
+import { router } from 'expo-router'
 
 interface ChatItem {
   id: string
@@ -12,7 +12,6 @@ interface ChatItem {
 }
 
 const Chat = () => {
-  const navigation = useNavigation()
   // 聊天数据
   const chatData: ChatItem[] = [
     {
@@ -59,48 +58,6 @@ const Chat = () => {
       avatar: 'https://randomuser.me/api/portraits/men/1.jpg',
       time: '昨天',
     },
-    {
-      id: '7',
-      name: '王总',
-      message: '项目计划已经确认，请开始工作',
-      avatar: 'https://randomuser.me/api/portraits/men/1.jpg',
-      time: '今天',
-    },
-    {
-      id: '8',
-      name: '王总',
-      message: '项目计划已经确认，请开始工作',
-      avatar: 'https://randomuser.me/api/portraits/men/1.jpg',
-      time: '今天',
-    },
-    {
-      id: '9',
-      name: '王总',
-      message: '项目计划已经确认，请开始工作',
-      avatar: 'https://randomuser.me/api/portraits/men/1.jpg',
-      time: '今天',
-    },
-    {
-      id: '10',
-      name: '王总',
-      message: '项目计划已经确认，请开始工作',
-      avatar: 'https://randomuser.me/api/portraits/men/1.jpg',
-      time: '今天',
-    },
-    {
-      id: '11',
-      name: '王总',
-      message: '项目计划已经确认，请开始工作',
-      avatar: 'https://randomuser.me/api/portraits/men/1.jpg',
-      time: '今天',
-    },
-    {
-      id: '12',
-      name: '王总',
-      message: '项目计划已经确认，请开始工作',
-      avatar: 'https://randomuser.me/api/portraits/men/1.jpg',
-      time: '今天',
-    },
   ]
 
   // 渲染聊天项
@@ -108,8 +65,7 @@ const Chat = () => {
     <TouchableOpacity
       style={styles.chatItem}
       onPress={() => {
-        // @ts-ignore
-        navigation.navigate('chatDetail')
+        router.push('/chatDetail')
       }}>
       <View>
         <Image source={{ uri: item.avatar }} style={styles.avatar} />

@@ -1,32 +1,25 @@
-import React from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  SafeAreaView,
-  ScrollView,
-  TextInput,
-  TouchableOpacity,
-  Image
-} from 'react-native';
+import React, { useRef, useState } from 'react'
+import { Pressable, SafeAreaView, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
+import { MaterialIcons } from '@expo/vector-icons'
+import { router } from 'expo-router'
 
-const ChatDetailPage = () => {
+const ChatDetail = () => {
   // 聊天消息数据
-  const messages = [
+  const [messages, setMessages] = useState([
     {
       id: '1',
       text: '你好啊，今天天气真不错！',
       time: '上午 10:30',
       isMe: false,
       name: '王小美',
-      read: false
+      read: false,
     },
     {
       id: '2',
       text: '是啊，适合出去玩，要不要一起去公园散步？',
       time: '上午 10:31',
       isMe: true,
-      read: true
+      read: true,
     },
     {
       id: '3',
@@ -34,75 +27,90 @@ const ChatDetailPage = () => {
       time: '上午 10:32',
       isMe: false,
       name: '王小美',
-      read: false
+      read: false,
     },
     {
       id: '4',
       text: '没问题，我准时到！记得带上相机，我们可以拍些照片。',
       time: '上午 10:33',
       isMe: true,
-      read: true
+      read: true,
     },
-  ];
+  ])
+  const [inputValue, setInputValue] = useState('')
+
+  const scrollViewRef = useRef<ScrollView>(null)
+
+  function sendMessage() {
+    setMessages([
+      ...messages,
+      {
+        id: Math.random() + '',
+        text: inputValue,
+        time: '下午 10:34',
+        isMe: true,
+        read: false,
+      },
+    ])
+    setInputValue('')
+    setTimeout(() => {
+      scrollViewRef.current?.scrollToEnd({ animated: true })
+    }, 50)
+  }
 
   return (
-      <SafeAreaView style={styles.container}>
-        {/* 标题栏 */}
-        <View style={styles.header}>
-          <Text style={styles.headerTitle}>王小美</Text>
-        </View>
+    <SafeAreaView style={styles.container}>
+      {/* 标题栏 */}
+      <View style={styles.header}>
+        <Pressable onPress={() => router.back()}>
+          <MaterialIcons size={20} name="arrow-back-ios" />
+        </Pressable>
 
-        {/* 聊天内容区域 */}
-        <ScrollView
-            style={styles.chatContainer}
-            contentContainerStyle={styles.chatContent}
-        >
-          {messages.map((message) => (
-              <View
-                  key={message.id}
-                  style={[
-                    styles.messageContainer,
-                    message.isMe ? styles.myMessage : styles.otherMessage
-                  ]}
-              >
-                {!message.isMe && (
-                    <Text style={styles.senderName}>{message.name}</Text>
-                )}
-                <View
-                    style={[
-                      styles.messageBubble,
-                      message.isMe ? styles.myBubble : styles.otherBubble
-                    ]}
-                >
-                  <Text style={styles.messageText}>{message.text}</Text>
-                </View>
-                <View style={styles.messageFooter}>
-                  <Text style={styles.messageTime}>{message.time}</Text>
-                  {message.isMe && message.read && (
-                      <Text style={styles.readStatus}>✅</Text>
-                  )}
-                </View>
-              </View>
-          ))}
-        </ScrollView>
+        <Text style={styles.headerTitle}>王小美</Text>
+        <MaterialIcons size={20} name="more-vert" />
+      </View>
 
-        {/* 输入框区域 */}
-        <View style={styles.inputContainer}>
-          <TextInput
-              style={styles.input}
-              placeholder="输入消息..."
-              placeholderTextColor="#999"
-          />
-          <TouchableOpacity style={styles.mediaButton}>
-            {/*<Image*/}
-            {/*    source={require('./assets/image-icon.png')}*/}
-            {/*    style={styles.mediaIcon}*/}
-            {/*/>*/}
-          </TouchableOpacity>
-        </View>
-      </SafeAreaView>
-  );
-};
+      {/* 聊天内容区域 */}
+      <ScrollView style={styles.chatContainer} contentContainerStyle={styles.chatContent} ref={scrollViewRef}>
+        {messages.map((message) => (
+          <View
+            key={message.id}
+            style={[styles.messageContainer, message.isMe ? styles.myMessage : styles.otherMessage]}>
+            {!message.isMe && <Text style={styles.senderName}>{message.name}</Text>}
+            <View style={[styles.messageBubble, message.isMe ? styles.myBubble : styles.otherBubble]}>
+              <Text style={styles.messageText}>{message.text}</Text>
+            </View>
+            <View style={styles.messageFooter}>
+              <Text style={styles.messageTime}>{message.time}</Text>
+            </View>
+          </View>
+        ))}
+      </ScrollView>
+
+      {/* 输入框区域 */}
+      <View style={styles.inputContainer}>
+        <Pressable>
+          <MaterialIcons size={28} name="emoji-emotions" className="mr-2" />
+        </Pressable>
+        <Pressable>
+          <MaterialIcons size={28} name="image" className="mr-2" />
+        </Pressable>
+        <TextInput
+          style={styles.input}
+          placeholder="输入消息..."
+          value={inputValue}
+          onChange={(e) => setInputValue(e.nativeEvent.text)}
+          placeholderTextColor="#999"
+        />
+        <TouchableOpacity activeOpacity={0.8} onPress={sendMessage}>
+          <View style={styles.sendButton}>
+            <MaterialIcons size={16} color="white" name="rocket-launch" />
+          </View>
+        </TouchableOpacity>
+      </View>
+    </SafeAreaView>
+  )
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -112,14 +120,16 @@ const styles = StyleSheet.create({
   header: {
     height: 44,
     backgroundColor: '#f5f5f5',
-    justifyContent: 'center',
+    justifyContent: 'space-between',
+    flexDirection: 'row',
+    paddingLeft: 16,
+    paddingRight: 16,
     alignItems: 'center',
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderBottomColor: '#ddd',
   },
   headerTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
+    fontSize: 16,
   },
   chatContainer: {
     flex: 1,
@@ -171,9 +181,6 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: '#999',
   },
-  readStatus: {
-    marginLeft: 4,
-  },
   inputContainer: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -185,20 +192,18 @@ const styles = StyleSheet.create({
   },
   input: {
     flex: 1,
-    height: 40,
+    height: 36,
     backgroundColor: '#f5f5f5',
-    borderRadius: 20,
+    borderRadius: 10,
     paddingHorizontal: 16,
     fontSize: 16,
   },
-  mediaButton: {
-    marginLeft: 12,
+  sendButton: {
+    marginLeft: 8,
+    backgroundColor: '#4F46E5',
     padding: 8,
+    borderRadius: 4,
   },
-  mediaIcon: {
-    width: 24,
-    height: 24,
-  },
-});
+})
 
-export default ChatDetailPage;
+export default ChatDetail
