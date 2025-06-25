@@ -1,6 +1,7 @@
 import React from 'react'
-import { FlatList, Image, SafeAreaView, StatusBar, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { FlatList, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { router } from 'expo-router'
+import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context'
 
 interface ChatItem {
   id: string
@@ -88,23 +89,23 @@ const Chat = () => {
   )
 
   return (
-    <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="dark-content" backgroundColor="#fff" />
+    <SafeAreaProvider>
+      <SafeAreaView style={styles.container} edges={['top', 'bottom']}>
+        {/* 标题栏 */}
+        <View style={styles.header}>
+          <Text style={styles.headerTitle}>聊天</Text>
+        </View>
 
-      {/* 标题栏 */}
-      <View style={styles.header}>
-        <Text style={styles.headerTitle}>聊天</Text>
-      </View>
-
-      {/* 聊天列表 */}
-      <FlatList
-        data={chatData}
-        renderItem={renderChatItem}
-        keyExtractor={(item) => item.id}
-        contentContainerStyle={styles.listContent}
-        ItemSeparatorComponent={() => <View style={styles.separator} />}
-      />
-    </SafeAreaView>
+        {/* 聊天列表 */}
+        <FlatList
+          data={chatData}
+          renderItem={renderChatItem}
+          keyExtractor={(item) => item.id}
+          contentContainerStyle={styles.listContent}
+          ItemSeparatorComponent={() => <View style={styles.separator} />}
+        />
+      </SafeAreaView>
+    </SafeAreaProvider>
   )
 }
 

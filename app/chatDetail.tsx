@@ -1,7 +1,18 @@
 import React, { useRef, useState } from 'react'
-import { Pressable, SafeAreaView, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
+import {
+  KeyboardAvoidingView,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from 'react-native'
 import { MaterialIcons } from '@expo/vector-icons'
 import { router } from 'expo-router'
+import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context'
+import { isEmpty } from '@/utils'
 
 const ChatDetail = () => {
   // 聊天消息数据
@@ -42,6 +53,7 @@ const ChatDetail = () => {
   const scrollViewRef = useRef<ScrollView>(null)
 
   function sendMessage() {
+    if (isEmpty(inputValue)) return
     setMessages([
       ...messages,
       {
@@ -59,56 +71,60 @@ const ChatDetail = () => {
   }
 
   return (
-    <SafeAreaView style={styles.container}>
-      {/* 标题栏 */}
-      <View style={styles.header}>
-        <Pressable onPress={() => router.back()}>
-          <MaterialIcons size={20} name="arrow-back-ios" />
-        </Pressable>
+    <SafeAreaProvider>
+      <SafeAreaView style={styles.container} edges={['top', 'bottom']}>
+        {/* 标题栏 */}
+        <View style={styles.header}>
+          <Pressable onPress={() => router.back()}>
+            <MaterialIcons size={20} name="arrow-back-ios" />
+          </Pressable>
 
-        <Text style={styles.headerTitle}>王小美</Text>
-        <MaterialIcons size={20} name="more-vert" />
-      </View>
+          <Text style={styles.headerTitle}>王小美</Text>
+          <MaterialIcons size={20} name="more-vert" />
+        </View>
 
-      {/* 聊天内容区域 */}
-      <ScrollView style={styles.chatContainer} contentContainerStyle={styles.chatContent} ref={scrollViewRef}>
-        {messages.map((message) => (
-          <View
-            key={message.id}
-            style={[styles.messageContainer, message.isMe ? styles.myMessage : styles.otherMessage]}>
-            {!message.isMe && <Text style={styles.senderName}>{message.name}</Text>}
-            <View style={[styles.messageBubble, message.isMe ? styles.myBubble : styles.otherBubble]}>
-              <Text style={styles.messageText}>{message.text}</Text>
+        {/* 聊天内容区域 */}
+        <ScrollView style={styles.chatContainer} contentContainerStyle={styles.chatContent} ref={scrollViewRef}>
+          {messages.map((message) => (
+            <View
+              key={message.id}
+              style={[styles.messageContainer, message.isMe ? styles.myMessage : styles.otherMessage]}>
+              {!message.isMe && <Text style={styles.senderName}>{message.name}</Text>}
+              <View style={[styles.messageBubble, message.isMe ? styles.myBubble : styles.otherBubble]}>
+                <Text style={styles.messageText}>{message.text}</Text>
+              </View>
+              <View style={styles.messageFooter}>
+                <Text style={styles.messageTime}>{message.time}</Text>
+              </View>
             </View>
-            <View style={styles.messageFooter}>
-              <Text style={styles.messageTime}>{message.time}</Text>
-            </View>
-          </View>
-        ))}
-      </ScrollView>
+          ))}
+        </ScrollView>
 
-      {/* 输入框区域 */}
-      <View style={styles.inputContainer}>
-        <Pressable>
-          <MaterialIcons size={28} name="emoji-emotions" className="mr-2" />
-        </Pressable>
-        <Pressable>
-          <MaterialIcons size={28} name="image" className="mr-2" />
-        </Pressable>
-        <TextInput
-          style={styles.input}
-          placeholder="输入消息..."
-          value={inputValue}
-          onChange={(e) => setInputValue(e.nativeEvent.text)}
-          placeholderTextColor="#999"
-        />
-        <TouchableOpacity activeOpacity={0.8} onPress={sendMessage}>
-          <View style={styles.sendButton}>
-            <MaterialIcons size={16} color="white" name="rocket-launch" />
+        {/* 输入框区域 */}
+        <KeyboardAvoidingView behavior={'padding'}>
+          <View style={styles.inputContainer}>
+            <Pressable>
+              <MaterialIcons size={28} name="emoji-emotions" className="mr-2" />
+            </Pressable>
+            <Pressable>
+              <MaterialIcons size={28} name="image" className="mr-2" />
+            </Pressable>
+            <TextInput
+              style={styles.input}
+              placeholder="输入消息..."
+              value={inputValue}
+              onChange={(e) => setInputValue(e.nativeEvent.text)}
+              placeholderTextColor="#999"
+            />
+            <TouchableOpacity activeOpacity={0.8} onPress={sendMessage}>
+              <View style={styles.sendButton}>
+                <MaterialIcons size={16} color="white" name="rocket-launch" />
+              </View>
+            </TouchableOpacity>
           </View>
-        </TouchableOpacity>
-      </View>
-    </SafeAreaView>
+        </KeyboardAvoidingView>
+      </SafeAreaView>
+    </SafeAreaProvider>
   )
 }
 
@@ -192,7 +208,7 @@ const styles = StyleSheet.create({
   },
   input: {
     flex: 1,
-    height: 36,
+    height: 40,
     backgroundColor: '#f5f5f5',
     borderRadius: 10,
     paddingHorizontal: 16,
